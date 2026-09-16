@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fact Check Africa — We Go Deeper</title>
+<meta name="description" content="Fact Check Africa investigates claims, stories and misinformation to help West Africans find the truth.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================= TOKENS ============================= */
+:root{
+  --navy:#001B2E;
+  --blue-deep:#02465B;
+  --teal:#00A8B8;
+  --cyan:#00D4E8;
+  --light-blue:#7DDCFF;
+  --white:#FFFFFF;
+  --abyss:#071A24;
+  --ink: #E8F4F8;
+  --ink-dim: rgba(232,244,248,0.68);
+  --ink-faint: rgba(232,244,248,0.42);
+  --hair: rgba(125,220,255,0.14);
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --ease: cubic-bezier(.22,.8,.28,1);
+  --container: 1200px;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+body{
+  margin:0;
+  background:var(--navy);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.lock{overflow:hidden; height:100vh;}
+h1,h2,h3,h4{
+  font-family:var(--font-display);
+  font-weight:600;
+  line-height:1.12;
+  margin:0 0 .5em;
+  color:var(--white);
+  letter-spacing:-0.01em;
+}
+p{margin:0 0 1em; color:var(--ink-dim);}
+a{color:inherit; text-decoration:none;}
+img,svg{display:block; max-width:100%;}
+button{font-family:inherit; cursor:pointer;}
+.container{max-width:var(--container); margin:0 auto; padding:0 28px;}
+.skip-link{
+  position:absolute; left:-999px; top:0; background:var(--cyan); color:var(--navy);
+  padding:12px 18px; z-index:9999; font-weight:600; border-radius:0 0 6px 0;
+}
+.skip-link:focus{left:0;}
+:focus-visible{outline:2px solid var(--cyan); outline-offset:3px;}
+
+.eyebrow{
+  font-family:var(--font-body); font-weight:600; font-size:13px;
+  letter-spacing:.04em; color:var(--teal); margin:0 0 14px; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{content:''; width:22px; height:1px; background:var(--teal); display:inline-block;}
+.section{position:relative; padding:120px 0; overflow:hidden;}
+.section-head{max-width:640px; margin-bottom:64px;}
+.section-head p{font-size:17px;}
+.btn{
+  display:inline-flex; align-items:center; gap:10px; padding:15px 28px;
+  border-radius:3px; font-weight:600; font-size:15px; border:1px solid transparent;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease), border-color .35s var(--ease);
+  white-space:nowrap;
+}
+.btn-primary{background:var(--cyan); color:var(--abyss);}
+.btn-primary:hover{box-shadow:0 0 0 1px var(--cyan), 0 0 28px rgba(0,212,232,.55); transform:translateY(-2px);}
+.btn-ghost{border-color:rgba(125,220,255,.35); color:var(--ink);}
+.btn-ghost:hover{border-color:var(--cyan); box-shadow:0 0 22px rgba(0,212,232,.25); transform:translateY(-2px);}
+.demo-tag{
+  display:inline-block; font-size:11px; font-weight:600; letter-spacing:.05em;
+  color:var(--light-blue); background:rgba(125,220,255,.08); border:1px solid rgba(125,220,255,.25);
+  padding:3px 9px; border-radius:20px;
+}
+
+/* depth backdrop that darkens as the page descends */
+.ocean-backdrop{position:fixed; inset:0; z-index:-2; background:linear-gradient(180deg,var(--navy) 0%, var(--blue-deep) 40%, var(--navy) 75%, var(--abyss) 100%); transition:filter .6s ease;}
+.grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.035; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* floating ambient particles reused across sections */
+.particles{position:absolute; inset:0; overflow:hidden; pointer-events:none;}
+.particle{position:absolute; bottom:-40px; border-radius:50%; background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(125,220,255,.15) 60%, transparent 70%); opacity:.55; animation:rise linear infinite;}
+@keyframes rise{
+  0%{transform:translateY(0) translateX(0); opacity:0;}
+  8%{opacity:.6;}
+  92%{opacity:.35;}
+  100%{transform:translateY(-115vh) translateX(var(--drift,20px)); opacity:0;}
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-14px) rotate(-1.2deg);}}
+@keyframes flicker{0%,100%{opacity:.85;}50%{opacity:1;}}
+
+/* reveal-on-scroll */
+.reveal{opacity:0; transform:translateY(26px); transition:opacity .9s var(--ease), transform .9s var(--ease);}
+.reveal.in{opacity:1; transform:translateY(0);}
+.reveal-stag > *{transition-delay:calc(var(--i,0) * 90ms);}
+
+/* ============================= INTRO / DIVE ============================= */
+#intro{
+  position:fixed; inset:0; z-index:1000; background:#000814;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  transition:opacity 1.1s ease, visibility 1.1s ease;
+}
+#intro.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+#intro-sky{position:absolute; inset:0; background:radial-gradient(ellipse at 50% -10%, #0c3446 0%, #001220 55%, #00060d 100%); transition:background 2.6s ease;}
+#intro.diving #intro-sky{background:radial-gradient(ellipse at 50% 30%, #062c3c 0%, #001019 45%, #00040a 100%);}
+#intro.arrived #intro-sky{background:#00040a;}
+#intro-canvas{position:absolute; inset:0; width:100%; height:100%;}
+.intro-content{position:relative; z-index:3; text-align:center; padding:0 20px; transition:transform 1.4s var(--ease), opacity 1s ease;}
+#intro.diving .intro-content{transform:translateY(-40px); opacity:0;}
+.intro-logo{
+  font-family:var(--font-display); font-weight:700; font-size:clamp(30px,5vw,46px);
+  letter-spacing:.02em; color:var(--white); margin-bottom:10px;
+  text-shadow:0 0 40px rgba(0,212,232,.35);
+}
+.intro-logo span{color:var(--cyan);}
+.intro-tag{color:var(--light-blue); font-size:14px; letter-spacing:.14em; font-weight:600; margin-bottom:46px;}
+.dive-cta{
+  background:none; border:1px solid rgba(125,220,255,.4); color:var(--ink);
+  padding:13px 26px; border-radius:30px; font-size:13px; font-weight:600; letter-spacing:.06em;
+  display:inline-flex; flex-direction:column; align-items:center; gap:10px;
+  animation:pulseGlow 2.6s ease-in-out infinite;
+}
+.dive-cta:hover{border-color:var(--cyan);}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(0,212,232,.28);}50%{box-shadow:0 0 0 10px rgba(0,212,232,0);}}
+.dive-cta .chev{width:16px;height:16px;border-right:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(45deg); animation:chevBounce 1.6s ease-in-out infinite;}
+@keyframes chevBounce{0%,100%{transform:translateY(0) rotate(45deg);}50%{transform:translateY(6px) rotate(45deg);}}
+
+#intro-sub-wrap{position:absolute; left:50%; top:-14%; transform:translate(-50%,0); width:min(320px,42vw); z-index:2; transition:top 3.6s var(--ease), opacity 1.2s ease .4s;}
+#intro.diving #intro-sub-wrap{top:58%;}
+#intro.arrived #intro-sub-wrap{opacity:0;}
+#intro-sub-wrap svg{animation:bob 3.4s ease-in-out infinite;}
+.searchlight-cone{position:absolute; left:50%; top:92%; width:2px; height:0; transform:translateX(-50%); pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,212,232,.35), transparent 85%);
+  clip-path:polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  transition:height 2.6s ease 1s, width 2.6s ease 1s;
+}
+#intro.diving .searchlight-cone{width:190px; height:60vh;}
+
+/* ============================= NAV ============================= */
+header#nav{
+  position:fixed; top:0; left:0; right:0; z-index:400;
+  padding:18px 0; backdrop-filter:blur(10px); background:linear-gradient(180deg, rgba(0,27,46,.78), rgba(0,27,46,0));
+  opacity:0; transform:translateY(-12px); transition:opacity 1s ease, transform 1s ease, background .4s ease, padding .3s ease;
+}
+header#nav.show{opacity:1; transform:translateY(0);}
+header#nav.scrolled{background:rgba(0,20,34,.92); box-shadow:0 1px 0 var(--hair);}
+.nav-row{display:flex; align-items:center; justify-content:space-between;}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px; color:var(--white);}
+.brand svg{width:26px;height:26px;}
+.brand small{display:block; font-family:var(--font-body); font-weight:500; font-size:10px; letter-spacing:.14em; color:var(--teal); margin-top:1px;}
+.nav-links{display:flex; gap:34px; list-style:none; margin:0; padding:0;}
+.nav-links a{font-size:14px; font-weight:500; color:var(--ink-dim); position:relative; padding-bottom:4px;}
+.nav-links a::after{content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--cyan); transition:width .3s var(--ease);}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--white);}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{width:100%;}
+.nav-cta{display:flex; align-items:center; gap:22px;}
+.hamburger{display:none; flex-direction:column; gap:5px; background:none; border:0; padding:6px;}
+.hamburger span{width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s ease, opacity .3s ease;}
+.mobile-menu{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; background:var(--abyss); z-index:500;
+  transform:translateX(100%); transition:transform .45s var(--ease); padding:100px 30px 30px; box-shadow:-20px 0 60px rgba(0,0,0,.5);}
+.mobile-menu.open{transform:translateX(0);}
+.mobile-menu ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:26px;}
+.mobile-menu a{font-family:var(--font-display); font-size:22px; color:var(--white);}
+.menu-backdrop{position:fixed; inset:0; background:rgba(0,8,16,.6); z-index:490; opacity:0; pointer-events:none; transition:opacity .4s ease;}
+.menu-backdrop.open{opacity:1; pointer-events:auto;}
+
+/* ============================= HERO ============================= */
+#hero{position:relative; min-height:100vh; display:flex; align-items:center; padding-top:120px; padding-bottom:80px;}
+.hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center; width:100%;}
+.hero-headline{font-size:clamp(48px,7vw,92px); margin-bottom:22px;}
+.hero-headline em{font-style:normal; color:var(--cyan);}
+.hero-copy{font-size:18px; max-width:460px; color:var(--ink-dim); margin-bottom:36px;}
+.hero-actions{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:54px;}
+.hero-stats{display:flex; gap:38px; flex-wrap:wrap;}
+.hero-stats div{border-left:1px solid var(--hair); padding-left:14px;}
+.hero-stats b{display:block; font-family:var(--font-display); font-size:22px; color:var(--white);}
+.hero-stats span{font-size:12px; color:var(--ink-faint); letter-spacing:.03em;}
+.hero-scene{position:relative; height:560px;}
+.hero-scene svg.coral{position:absolute; opacity:.5;}
+#hero-sub{position:absolute; right:2%; top:18%; width:78%; animation:bob 5s ease-in-out infinite;}
+.hero-beam{position:absolute; right:16%; top:38%; width:140px; height:260px; background:linear-gradient(180deg, rgba(0,212,232,.32), transparent 80%); clip-path:polygon(40% 0,60% 0,100% 100%,0 100%); filter:blur(2px); animation:flicker 4s ease-in-out infinite;}
+.scroll-cue{position:absolute; left:50%; bottom:18px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ink-faint); font-size:11px; letter-spacing:.12em;}
+.scroll-cue .line{width:1px; height:34px; background:linear-gradient(180deg, var(--cyan), transparent); animation:lineFlow 2.2s ease-in-out infinite;}
+@keyframes lineFlow{0%{opacity:.2;}50%{opacity:1;}100%{opacity:.2;}}
+
+/* ============================= ABOUT ============================= */
+#about{background:linear-gradient(180deg, transparent, rgba(2,70,91,.18) 40%, transparent);}
+.about-grid{display:grid; grid-template-columns:1fr .8fr; gap:70px; align-items:center;}
+.value-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:40px;}
+.value-card{border-left:2px solid var(--teal); padding:6px 0 6px 18px;}
+.value-card h4{font-size:16px; margin-bottom:6px;}
+.value-card p{font-size:14px; margin:0;}
+.porthole{position:relative; width:100%; max-width:420px; aspect-ratio:1/1; margin:0 auto; border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, #0a4a5e, #00151f 72%);
+  border:10px solid #051822; box-shadow:0 0 0 3px rgba(125,220,255,.18), 0 30px 70px rgba(0,0,0,.5), inset 0 0 50px rgba(0,0,0,.6);
+  overflow:hidden; display:flex; align-items:center; justify-content:center;
+}
+.porthole svg{width:56%;}
+.porthole .p-beam{position:absolute; left:52%; top:46%; width:90px; height:180px; background:linear-gradient(180deg, rgba(0,212,232,.4), transparent 80%); clip-path:polygon(40% 0,60% 0,100% 100%,0 100%); transform:rotate(18deg);}
+
+/* ============================= MISSION/VISION ============================= */
+.mv-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+.mv-card{background:linear-gradient(160deg, rgba(2,70,91,.35), rgba(0,27,46,.15)); border:1px solid var(--hair); border-radius:4px; padding:40px; position:relative;}
+.mv-card svg{width:34px; height:34px; color:var(--cyan); margin-bottom:22px;}
+.mv-card h3{font-size:14px; letter-spacing:.1em; color:var(--teal); margin-bottom:16px;}
+.mv-card p.statement{font-family:var(--font-display); font-size:22px; color:var(--white); font-weight:500; line-height:1.4;}
+.placeholder-note{font-size:12px; color:var(--ink-faint); border-top:1px solid var(--hair); margin-top:22px; padding-top:14px;}
+
+/* ============================= PROCESS ============================= */
+#process{background:linear-gradient(180deg, transparent, rgba(0,10,20,.4));}
+.process-track{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:26px; margin-top:20px;}
+.process-track::before{content:''; position:absolute; top:26px; left:26px; right:26px; height:1px; background:linear-gradient(90deg, var(--teal), transparent 96%); z-index:0;}
+.p-step{position:relative; z-index:1;}
+.p-num{font-family:var(--font-display); font-size:13px; color:var(--abyss); background:var(--cyan); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; margin-bottom:22px;}
+.p-step h4{font-size:17px; margin-bottom:8px;}
+.p-step p{font-size:14px;}
+
+/* ============================= FACT CHECK ============================= */
+#factcheck{background:radial-gradient(ellipse at 50% 0%, rgba(2,70,91,.4), transparent 60%), var(--navy);}
+.invest-panel{
+  border:1px solid var(--hair); border-radius:4px; padding:46px; background:rgba(0,15,26,.55);
+  display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; margin-bottom:90px;
+}
+.invest-claim{font-family:var(--font-display); font-size:19px; color:var(--white); margin-bottom:18px;}
+.stage-list{list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:14px;}
+.stage-list li{display:flex; align-items:center; gap:12px; font-size:14px; color:var(--ink-faint); transition:color .4s ease;}
+.stage-list li .dot{width:9px; height:9px; border-radius:50%; border:1.5px solid rgba(125,220,255,.35); flex:none; transition:all .4s ease;}
+.stage-list li.active{color:var(--white);}
+.stage-list li.active .dot{background:var(--cyan); border-color:var(--cyan); box-shadow:0 0 10px rgba(0,212,232,.7);}
+.stage-list li.done .dot{background:var(--teal); border-color:var(--teal);}
+#verdict-box{opacity:0; transform:translateY(10px); transition:all .5s var(--ease);}
+#verdict-box.show{opacity:1; transform:translateY(0);}
+.invest-visual{position:relative; height:280px; border-radius:4px; overflow:hidden; background:radial-gradient(circle at 50% 40%, rgba(0,168,184,.16), rgba(0,10,20,.8));}
+.invest-visual svg#inv-sub{position:absolute; left:50%; top:30%; width:120px; transform:translateX(-50%); animation:bob 4s ease-in-out infinite;}
+.invest-visual .scan-beam{position:absolute; left:50%; top:48%; width:0; height:0; background:linear-gradient(180deg, rgba(0,212,232,.4), transparent 85%); clip-path:polygon(45% 0,55% 0,100% 100%,0 100%); transform:translateX(-50%); transition:width 1.2s ease, height 1.2s ease;}
+.invest-visual.scanning .scan-beam{width:180px; height:150px;}
+
+.fc-toolbar{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center; margin-bottom:34px;}
+.fc-search{position:relative; flex:1; min-width:220px; max-width:360px;}
+.fc-search input{width:100%; background:rgba(0,15,26,.6); border:1px solid var(--hair); border-radius:30px; padding:12px 18px; color:var(--ink); font-size:14px;}
+.fc-search input::placeholder{color:var(--ink-faint);}
+.fc-search input:focus{border-color:var(--cyan); outline:none;}
+.fc-filters{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{background:transparent; border:1px solid var(--hair); color:var(--ink-dim); font-size:12.5px; padding:8px 15px; border-radius:20px; transition:all .3s ease;}
+.chip.active,.chip:hover{border-color:var(--cyan); color:var(--white); background:rgba(0,212,232,.08);}
+
+.fc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:22px;}
+.fc-card{background:rgba(2,20,32,.55); border:1px solid var(--hair); border-radius:4px; padding:24px; transition:transform .35s var(--ease), border-color .35s ease, box-shadow .35s ease; display:flex; flex-direction:column; text-align:left; width:100%; color:inherit;}
+.fc-card:hover{transform:translateY(-5px); border-color:rgba(125,220,255,.35); box-shadow:0 20px 40px rgba(0,0,0,.35);}
+.fc-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:16px;}
+.fc-cat{font-size:11px; letter-spacing:.05em; color:var(--teal); font-weight:600;}
+.verdict{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.03em; padding:5px 10px; border-radius:20px; white-space:nowrap;}
+.verdict .vd{width:7px; height:7px; border-radius:50%;}
+.verdict.true{background:rgba(63,201,127,.12); color:#5fe39a;} .verdict.true .vd{background:#3fc97f;}
+.verdict.partly{background:rgba(230,180,40,.12); color:#f0c452;} .verdict.partly .vd{background:#e6b428;}
+.verdict.false{background:rgba(230,80,80,.12); color:#f08a8a;} .verdict.false .vd{background:#e65050;}
+.verdict.unverified{background:rgba(150,160,170,.12); color:#c6ccd2;} .verdict.unverified .vd{background:#9aa4ad;}
+.fc-card h4{font-size:16px; margin-bottom:10px; line-height:1.35;}
+.fc-card p{font-size:13.5px; margin-bottom:16px; flex:1;}
+.fc-card .fc-meta{display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-faint); border-top:1px solid var(--hair); padding-top:14px;}
+.fc-card .fc-link{color:var(--cyan); font-weight:600;}
+.fc-empty{text-align:center; padding:60px 20px; color:var(--ink-faint); display:none;}
+.fc-empty.show{display:block;}
+
+/* modal */
+.modal-backdrop{position:fixed; inset:0; background:rgba(0,6,12,.78); backdrop-filter:blur(4px); z-index:700; opacity:0; pointer-events:none; transition:opacity .35s ease; display:flex; align-items:center; justify-content:center; padding:24px;}
+.modal-backdrop.open{opacity:1; pointer-events:auto;}
+.modal{background:#04121d; border:1px solid var(--hair); border-radius:6px; max-width:640px; width:100%; max-height:85vh; overflow-y:auto; padding:40px; transform:translateY(16px); transition:transform .4s var(--ease);}
+.modal-backdrop.open .modal{transform:translateY(0);}
+.modal-close{position:absolute; top:22px; right:26px; background:none; border:0; color:var(--ink-faint); font-size:26px; line-height:1;}
+.modal-close:hover{color:var(--white);}
+.modal h3{font-size:13px; letter-spacing:.08em; color:var(--teal); margin:26px 0 8px;}
+.modal h3:first-of-type{margin-top:0;}
+.modal .m-claim{font-family:var(--font-display); font-size:22px; color:var(--white); margin-bottom:18px;}
+.modal p{font-size:14.5px;}
+.modal ul{margin:0; padding-left:18px; color:var(--ink-dim); font-size:14px;}
+
+/* ============================= STORIES ============================= */
+.story-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;}
+.story-card{border:1px solid var(--hair); border-radius:4px; overflow:hidden; transition:transform .35s var(--ease), border-color .3s ease;}
+.story-card:hover{transform:translateY(-5px); border-color:rgba(125,220,255,.3);}
+.story-media{height:170px; position:relative; background:linear-gradient(160deg,#02465b,#001220); display:flex; align-items:center; justify-content:center;}
+.story-media svg{width:60px; opacity:.5;}
+.story-body{padding:22px;}
+.story-body .fc-cat{display:block; margin-bottom:10px;}
+.story-body h4{font-size:16px; margin-bottom:8px;}
+.story-body p{font-size:13.5px; margin-bottom:0;}
+
+/* ============================= RESOURCES ============================= */
+.res-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+.res-card{border:1px solid var(--hair); border-radius:4px; padding:28px; transition:all .35s var(--ease);}
+.res-card:hover{border-color:var(--cyan); box-shadow:0 0 30px rgba(0,168,184,.15); transform:translateY(-4px);}
+.res-card svg{width:26px; height:26px; color:var(--cyan); margin-bottom:18px;}
+.res-card h4{font-size:15.5px; margin-bottom:8px;}
+.res-card p{font-size:13px; margin:0;}
+
+/* ============================= CONTACT ============================= */
+.contact-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:60px;}
+.contact-list{list-style:none; margin:34px 0 0; padding:0; display:flex; flex-direction:column; gap:20px;}
+.contact-list li{display:flex; gap:14px; align-items:flex-start; font-size:14.5px; color:var(--ink-dim);}
+.contact-list svg{width:20px; height:20px; color:var(--cyan); flex:none; margin-top:2px;}
+.contact-list b{color:var(--white); display:block; font-size:12px; letter-spacing:.04em; margin-bottom:2px;}
+.social-row{display:flex; gap:12px; margin-top:30px;}
+.social-row a{width:38px; height:38px; border:1px solid var(--hair); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all .3s ease;}
+.social-row a:hover{border-color:var(--cyan); color:var(--cyan);}
+.social-row svg{width:16px; height:16px;}
+form.contact-form{display:flex; flex-direction:column; gap:18px;}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+label{font-size:12.5px; color:var(--ink-faint); display:block; margin-bottom:7px; letter-spacing:.03em;}
+input[type=text],input[type=email],textarea{
+  width:100%; background:rgba(0,15,26,.55); border:1px solid var(--hair); border-radius:3px;
+  padding:13px 15px; color:var(--ink); font-family:inherit; font-size:14px; resize:vertical;
+}
+input:focus,textarea:focus{border-color:var(--cyan); outline:none;}
+.form-note{font-size:12px; color:var(--ink-faint);}
+.form-success{display:none; background:rgba(0,212,232,.08); border:1px solid rgba(0,212,232,.3); border-radius:3px; padding:14px 16px; font-size:13.5px; color:var(--light-blue);}
+.form-success.show{display:block;}
+
+/* ============================= FOOTER ============================= */
+footer{background:var(--abyss); padding:70px 0 30px; border-top:1px solid var(--hair);}
+.footer-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:40px; padding-bottom:50px; border-bottom:1px solid var(--hair);}
+.footer-tag{color:var(--ink-faint); font-size:14px; max-width:280px; margin-top:14px;}
+.footer-cols{display:flex; gap:70px; flex-wrap:wrap;}
+.footer-col h5{font-size:12px; letter-spacing:.08em; color:var(--teal); margin-bottom:16px;}
+.footer-col ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px;}
+.footer-col a{font-size:14px; color:var(--ink-dim);}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; padding-top:26px; font-size:12.5px; color:var(--ink-faint);}
+
+/* ============================= RESPONSIVE ============================= */
+@media (max-width:980px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-scene{height:380px; order:-1;}
+  .about-grid,.contact-grid{grid-template-columns:1fr;}
+  .mv-grid{grid-template-columns:1fr;}
+  .process-track{grid-template-columns:1fr 1fr;}
+  .process-track::before{display:none;}
+  .res-grid{grid-template-columns:1fr 1fr;}
+  .invest-panel{grid-template-columns:1fr;}
+}
+@media (max-width:640px){
+  .section{padding:80px 0;}
+  .value-grid{grid-template-columns:1fr;}
+  .process-track{grid-template-columns:1fr;}
+  .res-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .hero-stats{gap:24px;}
+  .footer-cols{gap:36px;}
+}
+</style>
+</head>
+<body class="lock">
+<a href="#hero" class="skip-link">Skip to content</a>
+<div class="ocean-backdrop" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================= SVG SYMBOL LIBRARY ============================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="sub-icon" viewBox="0 0 240 100">
+    <ellipse cx="120" cy="52" rx="104" ry="30" fill="#062733" stroke="#00A8B8" stroke-width="1.5"/>
+    <path d="M60 52 a60 26 0 0 1 120 0" fill="none" stroke="#00D4E8" stroke-width="1" opacity=".35"/>
+    <path d="M112 24 L128 24 L134 6 L106 6 Z" fill="#083240" stroke="#00A8B8" stroke-width="1.5"/>
+    <circle cx="120" cy="6" r="3" fill="#00D4E8"/>
+    <circle cx="82" cy="50" r="9" fill="#03151d" stroke="#00D4E8" stroke-width="1.5"/>
+    <circle cx="82" cy="50" r="3.4" fill="#00D4E8"/>
+    <circle cx="112" cy="52" r="9" fill="#03151d" stroke="#00D4E8" stroke-width="1.5"/>
+    <circle cx="112" cy="52" r="3.4" fill="#00D4E8"/>
+    <circle cx="142" cy="52" r="9" fill="#03151d" stroke="#00D4E8" stroke-width="1.5"/>
+    <circle cx="142" cy="52" r="3.4" fill="#00D4E8"/>
+    <circle cx="216" cy="50" r="10" fill="#00D4E8">
+      <animate attributeName="opacity" values="1;.55;1" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <path d="M18 52 L2 40 M18 52 L2 64 M18 52 L-6 52" stroke="#03151d" stroke-width="5" stroke-linecap="round"/>
+    <path d="M20 40 Q46 30 70 34" stroke="#00A8B8" stroke-width="1" fill="none" opacity=".4"/>
+  </symbol>
+  <symbol id="coral-a" viewBox="0 0 200 220">
+    <path d="M40 220 C30 160 10 140 20 90 C28 50 60 40 55 10" fill="none" stroke="#02465B" stroke-width="10" stroke-linecap="round"/>
+    <path d="M90 220 C80 170 100 150 90 110 C82 78 110 60 100 20" fill="none" stroke="#00A8B8" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+    <path d="M140 220 C155 180 130 150 150 110 C165 82 145 50 165 15" fill="none" stroke="#02465B" stroke-width="9" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="ic-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6z"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.6"/></symbol>
+  <symbol id="ic-broadcast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2.4"/><path d="M8 8a5.5 5.5 0 000 8M16 8a5.5 5.5 0 010 8M4.8 4.8a10.5 10.5 0 000 14.4M19.2 4.8a10.5 10.5 0 010 14.4"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H12v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H12v16h6.5c.8 0 1.5-.7 1.5-1.5z"/></symbol>
+  <symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/></symbol>
+  <symbol id="ic-faq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.7-1.5 1.2-1.5 2.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3.5 6.5L12 13l8.5-6.5"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.6 7-11.4A7 7 0 105 9.6C5 14.4 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l16 16M20 4L4 20"/></symbol>
+  <symbol id="ic-fb" viewBox="0 0 24 24" fill="currentColor"><path d="M15 4h-2c-2.2 0-3.5 1.4-3.5 3.6V10H7v3h2.5v7h3.2v-7H15l.5-3h-2.8V7.9c0-.8.3-1.2 1.3-1.2H15z"/></symbol>
+  <symbol id="ic-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/></symbol>
+</defs>
+</svg>
+
+<!-- ============================= INTRO ============================= -->
+<div id="intro">
+  <div id="intro-sky" aria-hidden="true"></div>
+  <canvas id="intro-canvas" aria-hidden="true"></canvas>
+  <div id="intro-sub-wrap" aria-hidden="true">
+    <svg viewBox="0 0 240 100"><use href="#sub-icon"/></svg>
+    <div class="searchlight-cone"></div>
+  </div>
+  <div class="intro-content">
+    <div class="intro-logo">FACT CHECK <span>AFRICA</span></div>
+    <div class="intro-tag">WE GO DEEPER</div>
+    <button class="dive-cta" id="dive-btn" aria-label="Dive into the site">
+      <span>SCROLL TO DIVE</span>
+      <span class="chev"></span>
+    </button>
+  </div>
+</div>
+
+<!-- ============================= NAV ============================= -->
+<header id="nav">
+  <nav class="container nav-row" aria-label="Primary">
+    <a href="#hero" class="brand">
+      <svg viewBox="0 0 240 100"><use href="#sub-icon"/></svg>
+      <span>FACT CHECK<small>AFRICA</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#factcheck">Fact Check</a></li>
+      <li><a href="#stories">Stories</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#factcheck" class="btn btn-primary" style="padding:11px 20px; font-size:13px;">Explore Fact Checks</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="menu-backdrop" id="menu-backdrop"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#factcheck">Fact Check</a></li>
+    <li><a href="#stories">Stories</a></li>
+    <li><a href="#resources">Resources</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</div>
+
+<main>
+<!-- ============================= HERO ============================= -->
+<section id="hero">
+  <div class="particles" id="hero-particles" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div class="reveal in">
+      <div class="eyebrow">Investigating West African claims, daily</div>
+      <h1 class="hero-headline">WE GO<br><em>DEEPER.</em></h1>
+      <p class="hero-copy">Fact Check Africa investigates viral claims, trending stories and questionable information &mdash; then follows the evidence until we know what's true, what's false, and what's somewhere in between.</p>
+      <div class="hero-actions">
+        <a href="#factcheck" class="btn btn-primary">Explore Fact Checks →</a>
+        <a href="#about" class="btn btn-ghost">How we work</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>[N]</b><span>CLAIMS INVESTIGATED</span></div>
+        <div><b>[N]</b><span>COUNTRIES COVERED</span></div>
+        <div><b>[N]</b><span>SOURCES VERIFIED</span></div>
+      </div>
+      <p style="font-size:11px;color:var(--ink-faint);margin-top:10px;">Figures above are placeholders pending official statistics.</p>
+    </div>
+    <div class="hero-scene reveal in" aria-hidden="true">
+      <svg class="coral" style="left:-10px;bottom:-10px;width:140px;"><use href="#coral-a"/></svg>
+      <svg id="hero-sub" viewBox="0 0 240 100"><use href="#sub-icon"/></svg>
+      <div class="hero-beam"></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>DIVE INTO THE SITE</span><span class="line"></span></div>
+</section>
+
+<!-- ============================= ABOUT ============================= -->
+<section id="about" class="section">
+  <div class="container about-grid">
+    <div class="reveal">
+      <div class="eyebrow">About Fact Check Africa</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">We surface what's beneath the headline.</h2>
+      <p>[OFFICIAL ABOUT DESCRIPTION HERE &mdash; placeholder]. Fact Check Africa is an independent fact-checking initiative examining claims, stories and information circulating across West Africa, using verifiable evidence rather than assumption to reach a conclusion.</p>
+      <div class="value-grid">
+        <div class="value-card"><h4>Independent &amp; Non-Partisan</h4><p>We investigate every claim on its own evidence, regardless of who makes it.</p></div>
+        <div class="value-card"><h4>West African Focus</h4><p>Rooted in the region's languages, media landscape and context.</p></div>
+        <div class="value-card"><h4>Evidence-Based Verification</h4><p>Every verdict is traced back to sources you can check yourself.</p></div>
+        <div class="value-card"><h4>Public Interest Driven</h4><p>We publish what helps people decide what to trust and share.</p></div>
+      </div>
+    </div>
+    <div class="reveal" aria-hidden="true">
+      <div class="porthole">
+        <svg viewBox="0 0 240 100" style="width:60%;"><use href="#sub-icon"/></svg>
+        <div class="p-beam"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= MISSION & VISION ============================= -->
+<section id="mission" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Mission &amp; Vision</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">What drives the dive.</h2>
+    </div>
+    <div class="mv-grid">
+      <div class="mv-card reveal">
+        <svg><use href="#ic-target"/></svg>
+        <h3>MISSION</h3>
+        <p class="statement">"To verify information, expose misinformation, and empower West Africans with accurate, reliable and timely information."</p>
+        <p class="placeholder-note">Placeholder wording &mdash; to be replaced with the official mission statement.</p>
+      </div>
+      <div class="mv-card reveal">
+        <svg><use href="#ic-compass"/></svg>
+        <h3>VISION</h3>
+        <p class="statement">"A West Africa where people can trust the information they see, hear and share."</p>
+        <p class="placeholder-note">Placeholder wording &mdash; to be replaced with the official vision statement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PROCESS ============================= -->
+<section id="process" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">How We Check Facts</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">Four stages, one destination: the truth.</h2>
+    </div>
+    <div class="process-track reveal-stag">
+      <div class="p-step reveal" style="--i:0"><div class="p-num">01</div><h4>Find</h4><p>We spot viral claims, trending stories and suspicious information circulating online and offline.</p></div>
+      <div class="p-step reveal" style="--i:1"><div class="p-num">02</div><h4>Investigate</h4><p>We trace the claim to its origin, examine the available evidence and dig into the surrounding context.</p></div>
+      <div class="p-step reveal" style="--i:2"><div class="p-num">03</div><h4>Verify</h4><p>We cross-check what we find against reliable, independent sources and expert input.</p></div>
+      <div class="p-step reveal" style="--i:3"><div class="p-num">04</div><h4>Share</h4><p>We publish clear, accessible findings so people can understand &mdash; and share &mdash; the truth.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= FACT CHECK ============================= -->
+<section id="factcheck" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Fact Check</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">Watch an investigation unfold.</h2>
+      <p>A claim surfaces. The submarine dives to find out what's really there. This is a walkthrough of our process using a demo claim.</p>
+    </div>
+
+    <div class="invest-panel reveal">
+      <div>
+        <span class="demo-tag" style="margin-bottom:16px;display:inline-block;">DEMO WALKTHROUGH</span>
+        <p class="invest-claim">"A message circulating on WhatsApp claims a new tax now applies to every mobile money transfer, starting this week."</p>
+        <ul class="stage-list" id="stage-list">
+          <li data-stage="0"><span class="dot"></span> Claim detected</li>
+          <li data-stage="1"><span class="dot"></span> Investigating…</li>
+          <li data-stage="2"><span class="dot"></span> Sources found</li>
+          <li data-stage="3"><span class="dot"></span> Evidence analyzed</li>
+          <li data-stage="4"><span class="dot"></span> Verdict reached</li>
+        </ul>
+        <div id="verdict-box">
+          <span class="verdict partly"><span class="vd"></span>PARTLY TRUE</span>
+          <p style="margin-top:12px;font-size:14px;">A transaction levy does apply to some mobile money transfers, but the rate and threshold circulating in the message don't match any current published policy. Demo evidence &mdash; for illustration only.</p>
+        </div>
+        <button class="btn btn-ghost" id="replay-btn" style="margin-top:10px;padding:10px 20px;font-size:13px;">Replay investigation</button>
+      </div>
+      <div class="invest-visual" id="invest-visual" aria-hidden="true">
+        <svg id="inv-sub" viewBox="0 0 240 100"><use href="#sub-icon"/></svg>
+        <div class="scan-beam"></div>
+      </div>
+    </div>
+
+    <div class="section-head reveal" style="margin-bottom:36px;">
+      <div class="eyebrow">The Database</div>
+      <h2 style="font-size:clamp(26px,3.4vw,34px);">Browse recent fact checks.</h2>
+    </div>
+
+    <div class="fc-toolbar reveal">
+      <div class="fc-search">
+        <input type="text" id="fc-search-input" placeholder="Search a claim…" aria-label="Search fact checks">
+      </div>
+      <div class="fc-filters" id="fc-filters" role="group" aria-label="Filter by category">
+        <button class="chip active" data-cat="All">All</button>
+        <button class="chip" data-cat="Politics">Politics</button>
+        <button class="chip" data-cat="Health">Health</button>
+        <button class="chip" data-cat="Social Media">Social Media</button>
+        <button class="chip" data-cat="Economy">Economy</button>
+        <button class="chip" data-cat="Society">Society</button>
+        <button class="chip" data-cat="Environment">Environment</button>
+        <button class="chip" data-cat="Technology">Technology</button>
+      </div>
+    </div>
+
+    <div class="fc-grid reveal-stag" id="fc-grid"></div>
+    <p class="fc-empty" id="fc-empty">No fact checks match your search.</p>
+  </div>
+</section>
+
+<!-- ============================= STORIES ============================= -->
+<section id="stories" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Stories &amp; Insights</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">Real stories. Deeper context.</h2>
+      <p>Longer reads on how misinformation spreads across the region, and how to spot it. Demo content shown below.</p>
+    </div>
+    <div class="story-grid reveal-stag" id="story-grid"></div>
+  </div>
+</section>
+
+<!-- ============================= RESOURCES ============================= -->
+<section id="resources" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Resources</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">Tools for going deeper.</h2>
+    </div>
+    <div class="res-grid reveal-stag">
+      <div class="res-card reveal" style="--i:0"><svg><use href="#ic-book"/></svg><h4>Fact-Checking Guide</h4><p>A step-by-step guide to verifying a claim before you share it.</p></div>
+      <div class="res-card reveal" style="--i:1"><svg><use href="#ic-search"/></svg><h4>Media Literacy Tips</h4><p>Practical habits for reading news and social posts more critically.</p></div>
+      <div class="res-card reveal" style="--i:2"><svg><use href="#ic-flag"/></svg><h4>Report a Claim</h4><p>Send us a claim you've seen and think needs investigating.</p></div>
+      <div class="res-card reveal" style="--i:3"><svg><use href="#ic-faq"/></svg><h4>FAQs</h4><p>Answers to common questions about how and why we fact-check.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= CONTACT ============================= -->
+<section id="contact" class="section">
+  <div class="container contact-grid">
+    <div class="reveal">
+      <div class="eyebrow">Contact</div>
+      <h2 style="font-size:clamp(30px,4vw,42px);">Get in touch.</h2>
+      <p>Have a claim to report, a correction to flag, or a partnership to discuss?</p>
+      <ul class="contact-list">
+        <li><svg><use href="#ic-mail"/></svg><div><b>EMAIL</b>[OFFICIAL CONTACT EMAIL HERE]</div></li>
+        <li><svg><use href="#ic-pin"/></svg><div><b>LOCATION</b>[OFFICIAL LOCATION HERE]</div></li>
+      </ul>
+      <div class="social-row">
+        <a href="#" aria-label="X (Twitter)"><svg><use href="#ic-x"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg><use href="#ic-fb"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg><use href="#ic-ig"/></svg></a>
+      </div>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" id="contact-form">
+        <div class="form-row">
+          <div><label for="cf-name">Name</label><input type="text" id="cf-name" required></div>
+          <div><label for="cf-email">Email</label><input type="email" id="cf-email" required></div>
+        </div>
+        <div><label for="cf-message">Message</label><textarea id="cf-message" rows="5" required></textarea></div>
+        <p class="form-note">This is a demo form &mdash; submissions aren't sent anywhere yet.</p>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send message</button>
+        <p class="form-success" id="form-success">Thanks &mdash; your message has been noted for this demo.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================= FOOTER ============================= -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div style="max-width:280px;">
+        <div class="brand"><svg viewBox="0 0 240 100"><use href="#sub-icon"/></svg><span>FACT CHECK<small>AFRICA</small></span></div>
+        <p class="footer-tag">Real facts. Deeper truths.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col"><h5>NAVIGATE</h5><ul>
+          <li><a href="#hero">Home</a></li><li><a href="#about">About</a></li><li><a href="#factcheck">Fact Check</a></li>
+          <li><a href="#stories">Stories</a></li><li><a href="#resources">Resources</a></li><li><a href="#contact">Contact</a></li>
+        </ul></div>
+        <div class="footer-col"><h5>FOLLOW</h5><ul>
+          <li><a href="#">X (Twitter)</a></li><li><a href="#">Facebook</a></li><li><a href="#">Instagram</a></li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Fact Check Africa. All rights reserved.</span>
+      <span>Site content marked "demo" is placeholder pending official material.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================= MODAL ============================= -->
+<div class="modal-backdrop" id="fc-modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-claim">
+    <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+    <span class="demo-tag" id="modal-tag">DEMO CONTENT</span>
+    <h3>CLAIM</h3>
+    <p class="m-claim" id="modal-claim"></p>
+    <h3>SOURCE</h3><p id="modal-source"></p>
+    <h3>INVESTIGATION</h3><p id="modal-investigation"></p>
+    <h3>EVIDENCE</h3><p id="modal-evidence"></p>
+    <h3>VERDICT</h3><div id="modal-verdict"></div>
+    <h3>SOURCES CONSULTED</h3><ul id="modal-sources"></ul>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------------- INTRO / DIVE ---------------- */
+var intro = document.getElementById('intro');
+var diveBtn = document.getElementById('dive-btn');
+var navEl = document.getElementById('nav');
+var started = false;
+
+function startDive(){
+  if(started) return;
+  started = true;
+  intro.classList.add('diving');
+  var delay = reduced ? 50 : 3200;
+  setTimeout(function(){
+    intro.classList.add('arrived');
+    intro.classList.add('hidden');
+    document.body.classList.remove('lock');
+    navEl.classList.add('show');
+  }, delay);
+}
+
+diveBtn.addEventListener('click', startDive);
+window.addEventListener('wheel', function(){ if(!started) startDive(); }, {passive:true});
+window.addEventListener('touchmove', function(){ if(!started) startDive(); }, {passive:true});
+window.addEventListener('keydown', function(e){
+  if(!started && (e.key==='Enter'||e.key===' '||e.key==='ArrowDown')) startDive();
+});
+if(reduced){ setTimeout(startDive, 900); }
+
+/* intro canvas bubbles */
+(function(){
+  var canvas = document.getElementById('intro-canvas');
+  var ctx = canvas.getContext('2d');
+  var bubbles = [];
+  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  var count = reduced ? 0 : 42;
+  for(var i=0;i<count;i++){
+    bubbles.push({
+      x: Math.random()*canvas.width,
+      y: canvas.height + Math.random()*canvas.height,
+      r: 1 + Math.random()*3.2,
+      s: 0.3 + Math.random()*0.9,
+      drift: (Math.random()-0.5)*0.6,
+      o: 0.15 + Math.random()*0.4
+    });
+  }
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = 'rgba(125,220,255,';
+    for(var i=0;i<bubbles.length;i++){
+      var b = bubbles[i];
+      b.y -= b.s;
+      b.x += b.drift;
+      if(b.y < -10){ b.y = canvas.height + 10; b.x = Math.random()*canvas.width; }
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(125,220,255,'+b.o+')';
+      ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  if(count>0) tick();
+})();
+
+/* ---------------- NAV scroll state ---------------- */
+window.addEventListener('scroll', function(){
+  if(window.scrollY > 30) navEl.classList.add('scrolled'); else navEl.classList.remove('scrolled');
+}, {passive:true});
+
+/* mobile menu */
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobile-menu');
+var menuBackdrop = document.getElementById('menu-backdrop');
+function closeMenu(){ mobileMenu.classList.remove('open'); menuBackdrop.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); }
+hamburger.addEventListener('click', function(){
+  var open = mobileMenu.classList.toggle('open');
+  menuBackdrop.classList.toggle('open', open);
+  hamburger.setAttribute('aria-expanded', open ? 'true':'false');
+});
+menuBackdrop.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+/* ---------------- ambient hero particles ---------------- */
+(function(){
+  var wrap = document.getElementById('hero-particles');
+  if(reduced) return;
+  var n = 16;
+  for(var i=0;i<n;i++){
+    var p = document.createElement('div');
+    p.className = 'particle';
+    var size = 3 + Math.random()*7;
+    p.style.width = size+'px'; p.style.height = size+'px';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.setProperty('--drift', (Math.random()*60-30)+'px');
+    p.style.animationDuration = (9 + Math.random()*10)+'s';
+    p.style.animationDelay = (Math.random()*10)+'s';
+    wrap.appendChild(p);
+  }
+})();
+
+/* ---------------- reveal on scroll ---------------- */
+var revealEls = document.querySelectorAll('.reveal');
+if(reduced){
+  revealEls.forEach(function(el){ el.classList.add('in'); });
+} else {
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(function(el){ io.observe(el); });
+}
+
+/* ---------------- depth darkening backdrop ---------------- */
+var backdrop = document.querySelector('.ocean-backdrop');
+window.addEventListener('scroll', function(){
+  var d = Math.min(1, window.scrollY / (document.body.scrollHeight - window.innerHeight));
+  backdrop.style.filter = 'brightness(' + (1 - d*0.28) + ')';
+}, {passive:true});
+
+/* ---------------- investigation walkthrough ---------------- */
+var stageItems = document.querySelectorAll('#stage-list li');
+var verdictBox = document.getElementById('verdict-box');
+var investVisual = document.getElementById('invest-visual');
+var replayBtn = document.getElementById('replay-btn');
+var stageTimers = [];
+
+function resetStages(){
+  stageTimers.forEach(clearTimeout); stageTimers = [];
+  stageItems.forEach(function(li){ li.classList.remove('active','done'); });
+  verdictBox.classList.remove('show');
+  investVisual.classList.remove('scanning');
+}
+function playStages(){
+  resetStages();
+  var stepDelay = reduced ? 60 : 850;
+  stageItems.forEach(function(li, idx){
+    stageTimers.push(setTimeout(function(){
+      stageItems.forEach(function(other,j){
+        if(j < idx) other.classList.add('done');
+      });
+      li.classList.add('active');
+      if(idx === 1) investVisual.classList.add('scanning');
+      if(idx === stageItems.length - 1){
+        setTimeout(function(){ verdictBox.classList.add('show'); }, stepDelay*0.6);
+      }
+    }, idx * stepDelay));
+  });
+}
+replayBtn.addEventListener('click', playStages);
+var playedOnce = false;
+var invIo = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting && !playedOnce){ playedOnce = true; playStages(); }
+  });
+}, {threshold:0.4});
+invIo.observe(document.getElementById('stage-list'));
+
+/* ---------------- fact-check demo database ---------------- */
+var factChecks = [
+  {cat:'Politics', claim:'A new law bans street trading in Accra starting next month.', verdict:'false', verdictLabel:'FALSE', desc:'No such directive appears in any published government notice as of this check.', date:'Sep 2026',
+    source:'A screenshot circulating on WhatsApp and Facebook, styled as an official notice.',
+    investigation:'We searched for a matching notice on official government and municipal channels and contacted the relevant office for comment (demo).',
+    evidence:'No corresponding directive exists on any official government publication. The screenshot\'s formatting does not match known official templates.',
+    sources:['Demo source: Municipal authority public notices','Demo source: Government press office']},
+  {cat:'Health', claim:'Drinking hot water with lemon cures malaria.', verdict:'false', verdictLabel:'FALSE', desc:'No clinical evidence supports this as treatment; malaria requires antimalarial medication.', date:'Aug 2026',
+    source:'A post shared widely across social media health groups.',
+    investigation:'We reviewed public health guidance and consulted general medical literature on malaria treatment (demo).',
+    evidence:'Health authorities consistently identify confirmed antimalarial medication as the required treatment; home remedies are not a substitute.',
+    sources:['Demo source: Public health guidance','Demo source: Clinical literature review']},
+  {cat:'Social Media', claim:'A viral video shows flooding in Lagos this week.', verdict:'partly', verdictLabel:'PARTLY TRUE', desc:'The footage is real but from a previous flooding event, not this week.', date:'Sep 2026',
+    source:'A video shared with a caption referencing current-week flooding.',
+    investigation:'We used reverse image/video techniques to trace the footage to an earlier upload date (demo).',
+    evidence:'The same clip appears in posts dated significantly earlier than the current claim, with matching landmarks.',
+    sources:['Demo source: Earlier social media upload','Demo source: Local news archive']},
+  {cat:'Economy', claim:'Ghana\'s cedi is the best performing currency in Africa this year.', verdict:'unverified', verdictLabel:'UNVERIFIED', desc:'Currency performance rankings vary by methodology and time window; the claim lacks a clear source.', date:'Jul 2026',
+    source:'A statement shared without a cited data source.',
+    investigation:'We looked for the original ranking or dataset referenced by the claim (demo).',
+    evidence:'We could not locate the specific dataset or ranking methodology being referenced, so the claim cannot be confirmed or rejected outright.',
+    sources:['Demo source: Currency market data providers']},
+  {cat:'Technology', claim:'A popular messaging app is secretly recording all conversations.', verdict:'false', verdictLabel:'FALSE', desc:'No verified technical evidence supports blanket audio recording by the app.', date:'Jun 2026',
+    source:'A forwarded message warning users to delete the app.',
+    investigation:'We reviewed the app\'s published permissions and independent security research (demo).',
+    evidence:'Independent security audits referenced in this walkthrough found no evidence of undisclosed background recording.',
+    sources:['Demo source: App permissions documentation','Demo source: Independent security review']},
+  {cat:'Environment', claim:'Coastal erosion has submerged an entire town in Togo.', verdict:'partly', verdictLabel:'PARTLY TRUE', desc:'Erosion has affected parts of the coastline, but reports of a fully submerged town are exaggerated.', date:'May 2026',
+    source:'Photos shared alongside a dramatic caption.',
+    investigation:'We compared satellite imagery over time and reviewed local reporting (demo).',
+    evidence:'Imagery shows significant coastal erosion affecting structures near the shoreline, but not the complete submersion of the town described.',
+    sources:['Demo source: Satellite imagery comparison','Demo source: Local reporting']},
+  {cat:'Society', claim:'A trending post says schools nationwide are closing indefinitely.', verdict:'false', verdictLabel:'FALSE', desc:'No nationwide closure directive has been issued by education authorities.', date:'Sep 2026',
+    source:'A post claiming to quote an education ministry statement.',
+    investigation:'We checked official education authority channels for any matching statement (demo).',
+    evidence:'No matching statement appears on official channels; the quoted wording does not match any known official release.',
+    sources:['Demo source: Education ministry communications']}
+];
+
+var fcGrid = document.getElementById('fc-grid');
+var fcEmpty = document.getElementById('fc-empty');
+var searchInput = document.getElementById('fc-search-input');
+var filterChips = document.querySelectorAll('#fc-filters .chip');
+var activeCat = 'All';
+
+function verdictClass(v){ return v; }
+
+function renderCards(){
+  var term = searchInput.value.trim().toLowerCase();
+  var filtered = factChecks.filter(function(fc){
+    var matchesCat = (activeCat === 'All') || (fc.cat === activeCat);
+    var matchesTerm = !term || fc.claim.toLowerCase().indexOf(term) !== -1 || fc.cat.toLowerCase().indexOf(term) !== -1;
+    return matchesCat && matchesTerm;
+  });
+  fcGrid.innerHTML = '';
+  fcEmpty.classList.toggle('show', filtered.length === 0);
+  filtered.forEach(function(fc, i){
+    var card = document.createElement('button');
+    card.className = 'fc-card reveal in';
+    card.style.setProperty('--i', i);
+    card.innerHTML =
+      '<div class="fc-card-top"><span class="fc-cat">'+fc.cat.toUpperCase()+'</span>' +
+      '<span class="verdict '+verdictClass(fc.verdict)+'"><span class="vd"></span>'+fc.verdictLabel+'</span></div>' +
+      '<h4>&ldquo;'+fc.claim+'&rdquo;</h4>' +
+      '<p>'+fc.desc+'</p>' +
+      '<div class="fc-meta"><span>'+fc.date+' · <span class="demo-tag" style="padding:2px 7px;font-size:9.5px;">DEMO</span></span><span class="fc-link">Read fact check →</span></div>';
+    card.addEventListener('click', function(){ openModal(fc); });
+    fcGrid.appendChild(card);
+  });
+}
+searchInput.addEventListener('input', renderCards);
+filterChips.forEach(function(chip){
+  chip.addEventListener('click', function(){
+    filterChips.forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+    activeCat = chip.getAttribute('data-cat');
+    renderCards();
+  });
+});
+renderCards();
+
+/* modal */
+var modalBackdrop = document.getElementById('fc-modal-backdrop');
+var modalClose = document.getElementById('modal-close');
+var lastFocused = null;
+function openModal(fc){
+  lastFocused = document.activeElement;
+  document.getElementById('modal-claim').textContent = fc.claim;
+  document.getElementById('modal-source').textContent = fc.source;
+  document.getElementById('modal-investigation').textContent = fc.investigation;
+  document.getElementById('modal-evidence').textContent = fc.evidence;
+  document.getElementById('modal-verdict').innerHTML = '<span class="verdict '+verdictClass(fc.verdict)+'"><span class="vd"></span>'+fc.verdictLabel+'</span>';
+  var srcList = document.getElementById('modal-sources');
+  srcList.innerHTML = '';
+  fc.sources.forEach(function(s){ var li = document.createElement('li'); li.textContent = s; srcList.appendChild(li); });
+  modalBackdrop.classList.add('open');
+  document.body.classList.add('lock');
+  modalClose.focus();
+}
+function closeModal(){
+  modalBackdrop.classList.remove('open');
+  document.body.classList.remove('lock');
+  if(lastFocused) lastFocused.focus();
+}
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', function(e){ if(e.target === modalBackdrop) closeModal(); });
+window.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modalBackdrop.classList.contains('open')) closeModal(); });
+
+/* ---------------- stories demo grid ---------------- */
+var stories = [
+  {cat:'Explainer', title:'How a rumor becomes a viral claim in 48 hours', desc:'Tracing the path a piece of misinformation typically takes across platforms.'},
+  {cat:'Investigation', title:'Inside a cross-border misinformation network', desc:'A look at how similar false claims resurface across several countries.'},
+  {cat:'Media Literacy', title:'Five questions to ask before you share', desc:'A quick checklist for evaluating a claim before hitting share.'},
+  {cat:'Investigation', title:'What actually happens when a claim is reported to us', desc:'A behind-the-scenes walkthrough of our verification process.'}
+];
+var storyGrid = document.getElementById('story-grid');
+stories.forEach(function(s, i){
+  var card = document.createElement('article');
+  card.className = 'story-card reveal';
+  card.style.setProperty('--i', i);
+  card.innerHTML =
+    '<div class="story-media"><svg viewBox="0 0 240 100" style="width:70px;"><use href="#sub-icon"/></svg></div>' +
+    '<div class="story-body"><span class="fc-cat">'+s.cat.toUpperCase()+'</span><h4>'+s.title+'</h4><p>'+s.desc+'</p></div>';
+  storyGrid.appendChild(card);
+  if(!reduced){ var obs = new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target);} }); }, {threshold:0.15}); obs.observe(card); }
+  else { card.classList.add('in'); }
+});
+
+/* ---------------- contact form demo ---------------- */
+var contactForm = document.getElementById('contact-form');
+var formSuccess = document.getElementById('form-success');
+contactForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  formSuccess.classList.add('show');
+  contactForm.reset();
+});
+
+})();
+</script>
+</body>
+</html>
